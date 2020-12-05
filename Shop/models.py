@@ -32,7 +32,7 @@ class Product(models.Model):
     quantity = models.IntegerField()
     quantitySelled = models.IntegerField(default=0)
     demand = models.CharField(max_length=200,null=True,choices=demand)
-    dateAdded =models.DateTimeField(auto_now_add=True)
+    dateAdded = models.DateTimeField(auto_now_add=True)
     Card = models.CharField(max_length=200,null=True)
     Screen = models.CharField(max_length=200, null=True)
     RAM = models.CharField(max_length=200,null=True)
