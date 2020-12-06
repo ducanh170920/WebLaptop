@@ -4,6 +4,7 @@ from django.db import models
 from Account.models import Customer
 
 
+
 class Brand(models.Model):
     brandName = models.CharField(max_length=200,null=True)
     description = models.TextField(null=True,blank=True)
@@ -53,9 +54,25 @@ class Product(models.Model):
 
 
 class Cart(models.Model):
-    dateAdded = models.DateField(auto_now_add=True)
-    quantity = models.IntegerField();
+    customer = models.ForeignKey(Customer,on_delete=models.CASCADE,null=True,blank=True)
+    def get_total_product(self):
+        sum=0;
+        cart_product = self.cart_product_set.all()
+        for o in cart_product:
+            sum = sum + o.quantity;
+        return sum
+
+    def get_total_price_product(self):
+        sum = 0;
+        cart_product = self.cart_product_set.all()
+        for o in cart_product:
+            sum +=o.get_price_product();
+        return sum;
 
 class Cart_Product(models.Model):
-    customer = models.ForeignKey(Customer,on_delete=models.CASCADE,null=True,blank=True)
+    cart = models.ForeignKey(Cart,on_delete=models.CASCADE,null=True,blank=True)
     product = models.ForeignKey(Product,on_delete=models.CASCADE,null=True,blank=True)
+    quantity = models.IntegerField(default=0)
+
+    def get_price_product(self):
+        return int(self.product.price * self.quantity)
