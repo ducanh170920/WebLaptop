@@ -4,6 +4,7 @@ from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.http import JsonResponse
 from django.shortcuts import render
 from  .models import *
+from .filter import *
 # Create your views here.
 def Home(request):
     newProduct = Product.objects.order_by('dateAdded')[0:6]
@@ -43,11 +44,16 @@ def Same(request):
     return  (cart,cart_product)
 def Store(request):
     Allproducts = Product.objects.all()
+
+    myfilter = productFilter(request.GET, queryset=Allproducts)
+    Allproducts = myfilter.qs
+
     paginator = Paginator(Allproducts, 7)
     pagenum = request.GET.get('page', 1)
     numPage = paginator.num_pages  ### get numer of page
     (cart, cart_product) = Same(request)
-    print()
+
+
     try:
         products = paginator.page(pagenum)
     except (EmptyPage, InvalidPage, ValueError):
@@ -57,5 +63,6 @@ def Store(request):
         'numPage': range(1, numPage + 1),
         'cart': cart,
         'cart_product': cart_product,
+        'myfilter' : myfilter,
     }
     return render(request,'Shop/Store.html',context)
