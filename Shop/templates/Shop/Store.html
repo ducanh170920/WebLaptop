@@ -1,0 +1,162 @@
+{% extends 'Shop/main.html' %}
+{% load static %}
+{% load humanize %}
+{% block content %}
+<nav id="navigation">
+			<!-- container -->
+			<div class="container">
+				<!-- responsive-nav -->
+				<div id="responsive-nav">
+					<!-- NAV -->
+					<ul class="main-nav nav navbar-nav">
+						<li><a href="{% url 'home' %}">Home</a></li>
+						<li class="active"><a href="{% url 'store' %}">Store</a></li>
+
+
+
+
+					</ul>
+					<!-- /NAV -->
+				</div>
+				<!-- /responsive-nav -->
+			</div>
+			<!-- /container -->
+		</nav>
+ <div class="section">
+		<!-- container -->
+		<div class="container">
+			<!-- row -->
+			<div class="row">
+				<!-- ASIDE -->
+
+				<!-- /ASIDE -->
+
+				<!-- STORE -->
+				<div id="store" class="col-md-12">
+                    <!-- store fillter -->
+                    <div class="store-filter clearfix">
+                        <div class="store-sort">
+                            <label>
+                                Demand:
+                                <select class="input-select">
+                                    <option value="0">Office</option>
+                                    <option value="1">Gaming</option>
+                                    <option value="2">Workstation</option>
+                                </select>
+                            </label>
+
+                            <label>
+                                Brand:
+                                <select class="input-select">
+                                    <option value="0">Asus</option>
+                                    <option value="1">Dell</option>
+                                    <option value="2">Hp</option>
+                                    <option value="3">Acer</option>
+                                    <option value="4">Lenovo</option>
+                                    <option value="5">MSI</option>
+                                </select>
+                            </label>
+
+                            <label>
+                                Configuration:
+                                <select class="input-select">
+                                    <option value="0">i3</option>
+                                    <option value="1">i5</option>
+                                    <option value="2">i7</option>
+                                    <option value="3">i9</option>
+                                </select>
+                            </label>
+
+                            <label>
+                                Price:
+                                <select class="input-select">
+                                    <option value="1">10-15</option>
+                                    <option value="2">15-20</option>
+                                    <option value="3">20-25</option>
+                                    <option value="4">25-30</option>
+									<option value="4">>30</option>
+
+                                </select>
+                            </label>
+
+                        </div>
+
+                    </div>
+                     <!-- /store fillter -->
+					<!-- store products -->
+					<div class="row">
+						<!-- product -->
+						{% for product in products %}
+						<div class="col-md-3 col-xs-4">
+							<div class="product">
+								<div class="product-img">
+									<img src="{{product.ImageURL}}" alt="">
+								</div>
+								<div class="product-body">
+									<p class="product-category">{{product.category}}</p>
+									<h3 class="product-name"><a href="#">{{product.name}}</a></h3>
+									<h4 class="product-price">{{product.price|intcomma}},000 Vnd</h4>
+									<div class="product-rating">
+										<i class="fa fa-star"></i>
+										<i class="fa fa-star"></i>
+										<i class="fa fa-star"></i>
+										<i class="fa fa-star"></i>
+										<i class="fa fa-star"></i>
+									</div>
+									<div class="product-btns">
+										<button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+										<button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+										<button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+									</div>
+								</div>
+								<div class="add-to-cart">
+									<button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>
+								</div>
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+
+					<!-- /store products -->
+
+					<!-- store bottom filter -->
+					<div class="store-filter clearfix">
+							<span class="store-qty">Showing 20-100 products</span>
+							<ul class="store-pagination">
+								{% if products.has_previous %}
+   									 <li><a href="?page={{ products.previous_page_number }}"><i class="fa fa-angle-left"></i></a></li>
+								{% if products.number|add:'-1' > 1 %}
+   									 <li><a href="?page={{ products.number|add:'-1' }}">&hellip;</a></li>
+								{% endif %}
+								{% endif%}
+
+
+
+								{% for i in numPage %}
+								 	{% if products.number == i %}
+										<li class="active"><a href="?page={{i}}">{{i}}</a></li>
+									{% elif i > products.number|add:'-2' and i < products.number|add:'2' %}
+                						<li><a href="?page={{i}}">{{i}}</a></li>
+            						{% endif %}
+
+								{% endfor%}
+
+
+								{% if products.has_next %}
+
+								{% if products.number|add:'1' > 1 %}
+   									 <li><a href="?page={{ products.number|add:'-1' }}">&hellip;</a></li>
+								{% endif %}
+								<li><a href="?page={{ products.next_page_number }}"><i class="fa fa-angle-right"></i></a></li>
+								{% endif%}
+							</ul>
+						</div>
+					<!-- /store bottom filter -->
+				</div>
+				<!-- /STORE -->
+			</div>
+			<!-- /row -->
+		</div>
+		<!-- /container -->
+	</div>
+{% endblock content %}

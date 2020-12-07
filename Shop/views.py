@@ -1,5 +1,6 @@
 import json
 
+from django.core.paginator import Paginator, EmptyPage, InvalidPage
 from django.http import JsonResponse
 from django.shortcuts import render
 from  .models import *
@@ -19,8 +20,6 @@ def updateItem(request):
     data = json.loads(request.body)
     productId = data['productId']
     action = data['action']
-    print('productId:', productId)
-    print('action:', action)
     customer = request.user.customer
     product = Product.objects.get(id = productId)
     cart,created = Cart.objects.get_or_create(customer = customer)
@@ -42,3 +41,21 @@ def Same(request):
         cart = {'get_total_product': 0,'get_total_price_product':0}
 
     return  (cart,cart_product)
+def Store(request):
+    Allproducts = Product.objects.all()
+    paginator = Paginator(Allproducts, 7)
+    pagenum = request.GET.get('page', 1)
+    numPage = paginator.num_pages  ### get numer of page
+    (cart, cart_product) = Same(request)
+    print()
+    try:
+        products = paginator.page(pagenum)
+    except (EmptyPage, InvalidPage, ValueError):
+        products = paginator.page(1)
+    context ={
+        'products': products,
+        'numPage': range(1, numPage + 1),
+        'cart': cart,
+        'cart_product': cart_product,
+    }
+    return render(request,'Shop/Store.html',context)
