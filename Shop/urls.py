@@ -5,8 +5,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.Home, name ='home'),
+    path('home/', views.Home, name ='home'),
     path('store/', views.Store ,name = 'store'),
     path('update_item/', views.updateItem, name='update_item'),
 ]
-urlpatterns+= static(settings.MEDIA_URL,document_root = settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

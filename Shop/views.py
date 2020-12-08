@@ -17,6 +17,7 @@ def Home(request):
         'cart_product' : cart_product,
     }
     return render(request,'Shop/Home.html',context)
+
 def updateItem(request):
     data = json.loads(request.body)
     productId = data['productId']

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 {% load static %}
 {% load humanize %}
@@ -38,26 +37,33 @@
 		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
-		  <script type="text/javascript">
-			  var user = '{{request.user}}'
-		function getCookie(name) {
-			let cookieValue = null;
-			if (document.cookie && document.cookie !== '') {
-				const cookies = document.cookie.split(';');
-				for (let i = 0; i < cookies.length; i++) {
-					const cookie = cookies[i].trim();
-					// Does this cookie string begin with the name we want?
-					if (cookie.substring(0, name.length + 1) === (name + '=')) {
-						cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-						break;
+
+		<script type="text/javascript">
+			var user = '{{request.user}}'
+			function getCookie(name) {
+				let cookieValue = null;
+				if (document.cookie && document.cookie !== '') {
+					const cookies = document.cookie.split(';');
+					for (let i = 0; i < cookies.length; i++) {
+						const cookie = cookies[i].trim();
+						// Does this cookie string begin with the name we want?
+						if (cookie.substring(0, name.length + 1) === (name + '=')) {
+							cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+							break;
+						}
 					}
 				}
+				return cookieValue;
 			}
-			return cookieValue;
-}
-const csrftoken = getCookie('csrftoken');
-		  </script>
+			const csrftoken = getCookie('csrftoken');
+		</script>
+
+		{% block head %}
+
+    	{% endblock %}
+
     </head>
+
 	<body>
 		<!-- HEADER -->
 		<header>
@@ -71,12 +77,20 @@ const csrftoken = getCookie('csrftoken');
 					</ul>
 					<ul class="header-links pull-right">
 						<li class="dropdown">
-							<a class="dropbtn" href="#"><i class="fa fa-user-o"></i> My Account</a>
-							<div class="dropdown-content">
-    							<a href="#">View Profile</a>
-    							<a href="#">History</a>
-    							<a href="#">Log Out</a>
- 							</div>
+							{% if user.is_authenticated %}
+                                <a class="dropbtn" href="#"><i class="fa fa-user-o"></i> My Account</a>
+                                <div class="dropdown-content">
+                                    <a href="{% url 'profile' %}">View Profile</a>
+                                    <a href="{% url 'changepassword' %}">Change Password</a>
+                                    <a href="{% url 'logout' %}">Log Out</a>
+                                 </div>
+                            {% else %}
+								<a class="dropbtn" href="#"><i class="fa fa-user-o"></i> Options</a>
+								<div class="dropdown-content">
+                                	<a href="{% url 'login' %}?next={{ request.path }}"> <i class="fa fa-user-o"></i> Log In</a>
+                                	<a href="{% url 'register' %}"> <i class="fa fa-user-o"></i> Sign up</a>
+								</div>
+                            {% endif %}
 						</li>
 					</ul>
 				</div>
@@ -115,35 +129,51 @@ const csrftoken = getCookie('csrftoken');
 							<div class="header-ctn">
 								<!-- Cart -->
 								<div class="dropdown">
-									<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
-										<i class="fa fa-shopping-cart"></i>
-										<span>Your Cart</span>
-										<div class="qty">{{cart.get_total_product}}</div>
-									</a>
-									<div class="cart-dropdown">
-										<div class="cart-list">
-											{% for cart in cart_product %}
-											<div class="product-widget">
-												<div class="product-img">
-													<img src="{{cart.product.ImageURL}}" alt="">
+									{% if user.is_authenticated %}
+										<a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="true">
+												<i class="fa fa-shopping-cart"></i>
+												<span>Your Cart</span>
+												<div class="qty">3</div>
+										</a>
+									{% else %}
+										<a href="{% url 'login' %}" class="dropdown-toggle"><i class="fa fa-shopping-cart"></i>Your Cart</a>
+									{% endif %}
+
+									{% if user.is_authenticated %}
+										<div class="cart-dropdown">
+											<div class="cart-list">
+												<div class="product-widget">
+													<div class="product-img">
+														<img src="./img/product01.png" alt="">
+													</div>
+													<div class="product-body">
+														<h3 class="product-name"><a href="#">product name goes here</a></h3>
+														<h4 class="product-price"><span class="qty">1x</span>$980.00</h4>
+													</div>
+													<button class="delete"><i class="fa fa-close"></i></button>
 												</div>
-												<div class="product-body">
-													<h3 class="product-name"><a href="#">{{cart.product.name}}</a></h3>
-													<h4 class="product-price"><span class="qty">{{cart.quantity}}x</span>{{cart.product.price|intcomma}},000 Vnd</h4>
+
+												<div class="product-widget">
+													<div class="product-img">
+														<img src="./img/product02.png" alt="">
+													</div>
+													<div class="product-body">
+														<h3 class="product-name"><a href="#">product name goes here</a></h3>
+														<h4 class="product-price"><span class="qty">3x</span>$980.00</h4>
+													</div>
+													<button class="delete"><i class="fa fa-close"></i></button>
 												</div>
-												<button data-product={{cart.product.id}}   data-action = "remove" class="delete update-cart"><i class="fa fa-close"></i></button>
 											</div>
-											{% endfor %}
+											<div class="cart-summary">
+												<small>3 Item(s) selected</small>
+												<h5>SUBTOTAL: $2940.00</h5>
+											</div>
+											<div class="cart-btns">
+												<a href="#">View Cart</a>
+												<a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
+											</div>
 										</div>
-										<div class="cart-summary">
-											<small>{{cart.get_total_product}} Item(s) selected</small>
-											<h5>SUBTOTAL: {{cart.get_total_price_product|intcomma}},000 Vnd</h5>
-										</div>
-										<div class="cart-btns">
-											<a href="#">View Cart</a>
-											<a href="#">Checkout  <i class="fa fa-arrow-circle-right"></i></a>
-										</div>
-									</div>
+									{% endif %}
 								</div>
 								<!-- /Cart -->
 
@@ -173,48 +203,26 @@ const csrftoken = getCookie('csrftoken');
 		<!-- /NAVIGATION -->
 
 
-
-
 		{% block content %}
 
 		{% endblock content %}
 
-
-
-
-
-
-
-
-
-
-
-
-
-	<div id="newsletter" class="section">
+		{% if not user.is_authenticated %}
+		<!-- NEWSLETTER -->
+		<div id="newsletter" class="section">
 			<!-- container -->
 			<div class="container">
 				<!-- row -->
 				<div class="row">
 					<div class="col-md-12">
 						<div class="newsletter">
-							<p>Sign Up for the <strong>NEWSLETTER</strong></p>
-							<form>
-								<input class="input" type="email" placeholder="Enter Your Email">
-								<button class="newsletter-btn"><i class="fa fa-envelope"></i> Subscribe</button>
-							</form>
+							<p>Login with <strong>Other</strong></p>
 							<ul class="newsletter-follow">
 								<li>
-									<a href="#"><i class="fa fa-facebook"></i></a>
+									<a href="#"><i class="fa fa-facebook" style="font-size:15px"></i></a>
 								</li>
 								<li>
-									<a href="#"><i class="fa fa-twitter"></i></a>
-								</li>
-								<li>
-									<a href="#"><i class="fa fa-instagram"></i></a>
-								</li>
-								<li>
-									<a href="#"><i class="fa fa-pinterest"></i></a>
+									<a href="#"><i class="fa fa-google" style="font-size:15px"></i></a>
 								</li>
 							</ul>
 						</div>
@@ -225,6 +233,7 @@ const csrftoken = getCookie('csrftoken');
 			<!-- /container -->
 		</div>
 		<!-- /NEWSLETTER -->
+		{% endif %}
 
 		<!-- FOOTER -->
 		<footer id="footer">
@@ -332,8 +341,5 @@ const csrftoken = getCookie('csrftoken');
 		<script src="{% static 'js/cart.js' %}"></script>
 		<script src="{% static 'js/filterProduct.js' %}"></script>
 		<script src="{% static 'js/jquery.zoom.min.js' %}"></script>
-
-
-
 
 </body></html>
