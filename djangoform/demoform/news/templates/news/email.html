@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form action="{% url 'news:pro' %}" method="post">
+        {% csrf_token %}
+        {{f}}
+        <p><input type="submit" value="SendEmail"></p>
+    </form>
+</body>
+</html>

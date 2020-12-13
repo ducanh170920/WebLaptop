@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>Đây là template</h1>
+    <p>Tôi là {{name}}</p>
+    <h2>Tai san cua t gom:</h2>
+
+    <ul>
+        {% for i in item %}
+            {% if i != "maytinh" %}
+                <li>{{ i }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+
+    <ul>
+        {% if dsquest %}
+            {% for i in dsquest %}
+                <a href= "{% url 'polls:detail' i.id %}"><p>{{ i.question_text }}</p></a>
+            {% endfor %}
+        {% endif %}
+    </ul>
+
+      {% if qs %}
+          <form action="{% url 'polls:vote' qs.id %}" method="post">
+             {% csrf_token %}
+             <ul>
+                 {% for i in qs.choice_set.all %}
+                    <li><input type="radio" value="{{i.id}}" name="choice">{{i.choice_text}}</li>
+                 {% endfor %}
+                    <p><input type="submit" value="Send"></p>
+             </ul>
+          </form>
+      {% endif %}
+</body>
+</html>
